@@ -12,13 +12,11 @@ import org.testng.annotations.Test;
 
 public class Register_Test {
 	WebDriver driver;
-	String projectPath=System.getProperty("user.dir");
-	String osName=System.getProperty("os.name");
-	
+	String projectPath = System.getProperty("user.dir");
+	String osName = System.getProperty("os.name");
+
 	@BeforeClass
 	public void beforeClass() {
-		System.setProperty("webdriver.gecko.driver", projectPath+"\\browserDriver\\geckodriver.exe");
-		
 		if (osName.contains("Windows")) {
 			System.setProperty("webdriver.gecko.driver", projectPath + "\\browserDrivers\\geckodriver.exe");
 		} else {
@@ -27,14 +25,21 @@ public class Register_Test {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
-		
 	}
-	
+
 	@Test
 	public void TC_01_Empty_Data() {
 		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		// Verify	
+		// Action
+		driver.findElement(By.id("txtFirstname")).sendKeys("");
+		driver.findElement(By.name("txtEmail")).sendKeys("");
+		driver.findElement(By.id("txtCEmail")).sendKeys("");
+		driver.findElement(By.id("txtPassword")).sendKeys("");
+		driver.findElement(By.id("txtCPassword")).sendKeys("");
+		driver.findElement(By.id("txtPhone")).sendKeys("");
+		driver.findElement(By.xpath("//form[@id='frmLogin']//button[text()='ĐĂNG KÝ']")).click();
+
+		// Verify
 		Assert.assertEquals(driver.findElement(By.id("txtFirstname-error")).getText(), "Vui lòng nhập họ tên");
 		Assert.assertEquals(driver.findElement(By.id("txtEmail-error")).getText(), "Vui lòng nhập email");
 		Assert.assertEquals(driver.findElement(By.id("txtCEmail-error")).getText(), "Vui lòng nhập lại địa chỉ email");
@@ -43,10 +48,17 @@ public class Register_Test {
 		Assert.assertEquals(driver.findElement(By.id("txtPhone-error")).getText(), "Vui lòng nhập số điện thoại.");
 		System.out.println("abc");
 	}
+
+	@Test
+	public void TC_02_Invalid_Email() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+
+		
+	}
+
 	@AfterClass
 	public void afterClass() {
 		driver.quit();
 	}
-
-	
 }
