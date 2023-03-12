@@ -32,7 +32,7 @@ public class Register_Test {
 		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
 		// Action
 		driver.findElement(By.id("txtFirstname")).sendKeys("");
-		driver.findElement(By.name("txtEmail")).sendKeys("");
+		driver.findElement(By.id("txtEmail")).sendKeys("");
 		driver.findElement(By.id("txtCEmail")).sendKeys("");
 		driver.findElement(By.id("txtPassword")).sendKeys("");
 		driver.findElement(By.id("txtCPassword")).sendKeys("");
@@ -46,15 +46,104 @@ public class Register_Test {
 		Assert.assertEquals(driver.findElement(By.id("txtPassword-error")).getText(), "Vui lòng nhập mật khẩu");
 		Assert.assertEquals(driver.findElement(By.id("txtCPassword-error")).getText(), "Vui lòng nhập lại mật khẩu");
 		Assert.assertEquals(driver.findElement(By.id("txtPhone-error")).getText(), "Vui lòng nhập số điện thoại.");
-		System.out.println("abc");
+
 	}
 
 	@Test
 	public void TC_02_Invalid_Email() {
 		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
+		// Action
+		driver.findElement(By.id("txtFirstname")).sendKeys("Chu Thi Hoa");
+		driver.findElement(By.id("txtEmail")).sendKeys("abc123");
+		driver.findElement(By.id("txtCEmail")).sendKeys("abc123");
+		driver.findElement(By.id("txtPassword")).sendKeys("123456");
+		driver.findElement(By.id("txtCPassword")).sendKeys("123456");
+		driver.findElement(By.id("txtPhone")).sendKeys("0986079004");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		// Verify
+		Assert.assertEquals(driver.findElement(By.id("txtEmail-error")).getText(), "Vui lòng nhập email hợp lệ");
+		Assert.assertEquals(driver.findElement(By.id("txtCEmail-error")).getText(), "Email nhập lại không đúng");
 
-		
+	}
+
+	@Test
+	public void TC_03_Register_With_Incorrect_Confirm_Email() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
+		// Action
+		driver.findElement(By.id("txtFirstname")).sendKeys("Chu Thi Hoa");
+		driver.findElement(By.id("txtEmail")).sendKeys("abc@gmail.com");
+		driver.findElement(By.id("txtCEmail")).sendKeys("abc@gmail.com");
+		driver.findElement(By.id("txtPassword")).sendKeys("123456");
+		driver.findElement(By.id("txtCPassword")).sendKeys("1234567");
+		driver.findElement(By.id("txtPhone")).sendKeys("0986079004");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		// Verify
+		Assert.assertEquals(driver.findElement(By.id("txtCPassword-error")).getText(), "Mật khẩu bạn nhập không khớp");
+
+	}
+
+	@Test
+	public void TC_04_Register_Password_LessThan_6_Characters() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
+		// Action
+		driver.findElement(By.id("txtFirstname")).sendKeys("Chu Thị Hoa");
+		driver.findElement(By.id("txtEmail")).sendKeys("abc@gmail.com");
+		driver.findElement(By.id("txtCEmail")).sendKeys("abc@gmail.com");
+		driver.findElement(By.id("txtPassword")).sendKeys("12345");
+		driver.findElement(By.id("txtCPassword")).sendKeys("12345");
+		driver.findElement(By.id("txtPhone")).sendKeys("0986079004");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		// Verify
+		Assert.assertEquals(driver.findElement(By.id("txtPassword-error")).getText(),
+				"Mật khẩu phải có ít nhất 6 ký tự");
+		Assert.assertEquals(driver.findElement(By.id("txtCPassword-error")).getText(),
+				"Mật khẩu phải có ít nhất 6 ký tự");
+
+	}
+
+	@Test
+	public void TC_05_Register_With_Incorrect_Confirm_Password() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
+		// Action
+		driver.findElement(By.id("txtFirstname")).sendKeys("Chu Thị Hoa");
+		driver.findElement(By.id("txtEmail")).sendKeys("abc@gmail.com");
+		driver.findElement(By.id("txtCEmail")).sendKeys("abc@gmail.com");
+		driver.findElement(By.id("txtPassword")).sendKeys("123456");
+		driver.findElement(By.id("txtCPassword")).sendKeys("1234567");
+		driver.findElement(By.id("txtPhone")).sendKeys("0986079004");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		// Verify
+		Assert.assertEquals(driver.findElement(By.id("txtCPassword-error")).getText(), "Mật khẩu bạn nhập không khớp");
+
+	}
+
+	@Test
+	public void TC_06_Register_With_invalid_Phone() {
+		driver.get("https://alada.vn/tai-khoan/dang-ky.html");
+		// Action
+		driver.findElement(By.id("txtFirstname")).sendKeys("Chu Thị Hoa");
+		driver.findElement(By.id("txtEmail")).sendKeys("dienthoai@gmail.com");
+		driver.findElement(By.id("txtCEmail")).sendKeys("dienthoai@gmail.com");
+		driver.findElement(By.id("txtPassword")).sendKeys("123456");
+		driver.findElement(By.id("txtCPassword")).sendKeys("123456");
+		// Nhập ít hơn 10 ký tự
+		driver.findElement(By.id("txtPhone")).sendKeys("0986023");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		Assert.assertEquals(driver.findElement(By.id("txtPhone-error")).getText(), "Số điện thoại phải từ 10-11 số.");
+
+		// Nhập lon hon 11 ký tự
+		driver.findElement(By.id("txtPhone")).clear();
+		driver.findElement(By.id("txtPhone")).sendKeys("098607900655");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		Assert.assertEquals(driver.findElement(By.id("txtPhone-error")).getText(), "Số điện thoại phải từ 10-11 số.");
+
+		//Ko bắt đầu bằng các nhà mạng
+		driver.findElement(By.id("txtPhone")).clear();
+		driver.findElement(By.id("txtPhone")).sendKeys("1234567890");
+		driver.findElement(By.xpath("//button[@type='submit']")).click();
+		Assert.assertEquals(driver.findElement(By.id("txtPhone-error")).getText(), "Số điện thoại bắt đầu bằng: 09 - 03 - 012 - 016 - 018 - 019 - 088 - 03 - 05 - 07 - 08");
+
+
 	}
 
 	@AfterClass
